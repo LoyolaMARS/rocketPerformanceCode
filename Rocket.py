@@ -13,6 +13,7 @@
  *   Ver      Date     Modified by:  Reason for change or modification
  *  -----  ----------  ------------  ---------------------------------------------------------------------
  *  1.0.0  2019-01-17  Matt Stein    Harrison Leece original code updates loaded in
+ *  1.0.1  2019-01-19  Harrison L.   Changed all vars to conform with python programming guidelines
  *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ '''
  # imports
  import math
@@ -48,7 +49,7 @@ class Rocket:
        ## ADDITIONAL CODE TO BE SORTED
 
 
-       stepSize = .01
+       step_size = .01
 
        # Passes curren time 'step' conditions to RK4 function
        # Returns the next time 'step' conditions.
@@ -59,9 +60,9 @@ class Rocket:
        range_thrust=range(3000,3001,250)
        print(range_thrust)
        #initialize graphing arrays
-       xGraph = np.array([0])
-       vGraph = np.array([0])
-       tGraph = np.array([0])
+       x_graph = np.array([0])
+       v_graph = np.array([0])
+       t_graph = np.array([0])
        for thrust in range_thrust:
 
         #Generally, do not change these.  Describes initial conditions and
@@ -70,12 +71,12 @@ class Rocket:
         v=0
         x = 0
         rho=0
-        burnOutTime = 0
-        burnOutVelocity = 0
-        currentVelocity = 0
+        bo_time = 0
+        bo_velocity = 0
+        current_velocity = 0
 
-        mass = initialMass
-        propellant_mass = prRatio * mass
+        mass = initial_mass
+        propellant_mass = pr_ratio * mass
 
 
     ## END ADDITIONAL CODE TO BE SORTED
@@ -87,29 +88,29 @@ class Rocket:
         THE FLIGHT SIMULATION IS A FUNCTION.
         '''
     def flight_simulation( ):
-        #While loop runs 
+        #While loop runs until rocket velocity is less than 10 feet/s
         while (True):
             #Calculates atmospheric density at altitude x and passes density to RK4 fxn.
             rho = compDensity(x)
             #Calculates mDot and thrust as tank pressure drops (if applicable) and  altitude changes
-            n_thrust, n_mdot = compThrust2(thrust, mDot, (initialMass * prRatio) , propellantMass)
+            n_thrust, n_mdot = compThrust2(thrust, m_dot, (initial_mass * pr_ratio) , propellant_mass)
             #Calculates Cd as a fx of mach number
             K = compTemp(x)
             mach = compMach(v,K)
             n_cd = waveDrag(Cd,mach)
             #RK4 function to solve rocket differential equation
-            v = RK4(t,v, mass, finalMass, nCd, nThrust, nMdot, gravity, Area, stepSize, rho)
-            if (v > 30) or (t < 10):
+            v = RK4(t,v, mass, final_mass, n_cd, n_thrust, n_mdot, gravity, area, step_size, rho)
+            if (v > 10) or (t < 10):
                 if (n_thrust > 0 and (mass > final_mass)):
                     mass = mass - n_mdot * step_size
                     propellant_mass = propellant_mass - n_mdot * step_size
-                    burn_out_time = t
-                    burn_out_velocity = v
+                    bo_time = t
+                    bo_velocity = v
                     bo_thrust = n_thrust
                     bo_mdot = n_mdot
                     bo_alt = x
                 #Thrust is off, but propellant is still being drained by the pressurant fluid (if applicable, such as blowdown system)
-                elif (nThrust == 0 and nMdot != 0):
+                elif (n_thrust == 0 and n_mdot != 0):
                     mass = mass - n_mdot * step_size
                     propellant_mass = propellant_mass - n_mdot * step_size
                 else:
@@ -118,14 +119,14 @@ class Rocket:
                 #Computes current displacement using reimen sum
                 x = x + ((current_velocity + v)/2 * step_size)
 
-            xGraph = np.append(xGraph, x)
-            vGraph = np.append(vGraph, v)
+            x_graph = np.append(x_graph, x)
+            v_graph = np.append(v_graph, v)
             current_velocity = v
 
             #steps the while loop forward in time
             t = t + step_size
-            tGraph = np.append(tGraph,t)
-        else:
-            break
+            t_graph = np.append(t_graph,t)
+            else:
+                break
     #returns a tuple containing vectors containing displacement, velocity and time, maximum velocity, burnouttime, and max altitude
-    return xGraph, vGraph, tGraph, burnOutVelocity, burnOutTime, x, 
+    return x_graph, v_graph, t_graph, bo_velocity, bo_time, x, 
