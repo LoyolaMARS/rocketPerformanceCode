@@ -26,105 +26,105 @@
  from waveDrag import compMach
  from waveDrag import waveDrag
 
-# Create a Rocket Class
+ Create a Rocket Class
 class Rocket:
 
-	def __init__(weight, pr_ratio, isp, diameter, drag_coefficient):
-	    '''    weight :            total rocket weight
-			 pr_ratio :          mass of propelants / total wet mass of rockets
-			 isp :               specific impulse; rating of rocket efficiency
-			 diameter:           rocket body
-			 drag_coefficient:   coefficient of drag
-	    '''
-	    gravity = 32.174  # ft / s^2
-	    initial_mass = weight / gravity
-	    propellant_mass = pr_ratio * initial_mass
-	    final_mass = initial_mass - propellant_mass
-	    area = 3.1416 * 1/4 * (diameter) ** 2
+    def __init__(weight, pr_ratio, isp, diameter, drag_coefficient):
+        '''    weight :            total rocket weight
+             pr_ratio :          mass of propelants / total wet mass of rockets
+             isp :               specific impulse; rating of rocket efficiency
+             diameter:           rocket body
+             drag_coefficient:   coefficient of drag
+        '''
+        gravity = 32.174  # ft / s^2
+        initial_mass = weight / gravity
+        propellant_mass = pr_ratio * initial_mass
+        final_mass = initial_mass - propellant_mass
+        area = 3.1416 * 1/4 * (diameter) ** 2
 
-	    return gravity, initial mass, propellant_mass, final_mass, area
+        return gravity, initial mass, propellant_mass, final_mass, area
 
-	   ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	   ## ADDITIONAL CODE TO BE SORTED
-
-
-	   stepSize = .01
-
-	   # Passes curren time 'step' conditions to RK4 function
-	   # Returns the next time 'step' conditions.
-	   # Eqaution is modified in RK4.py file
+       ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       ## ADDITIONAL CODE TO BE SORTED
 
 
-	   #range is to allow faster optimization of engine thrust if desired
-	   range_thrust=range(3000,3001,250)
-	   print(range_thrust)
-	   #initialize graphing arrays
-	   xGraph = np.array([0])
-	   vGraph = np.array([0])
-	   tGraph = np.array([0])
-	   for thrust in range_thrust:
+       stepSize = .01
 
-		#Generally, do not change these.  Describes initial conditions and
-		#initializes the variables
-		t=0
-		v=0
-		x = 0
-		rho=0
-		burnOutTime = 0
-		burnOutVelocity = 0
-		currentVelocity = 0
+       # Passes curren time 'step' conditions to RK4 function
+       # Returns the next time 'step' conditions.
+       # Eqaution is modified in RK4.py file
 
-		mass = initialMass
-		propellantMass = prRatio * mass
+
+       #range is to allow faster optimization of engine thrust if desired
+       range_thrust=range(3000,3001,250)
+       print(range_thrust)
+       #initialize graphing arrays
+       xGraph = np.array([0])
+       vGraph = np.array([0])
+       tGraph = np.array([0])
+       for thrust in range_thrust:
+
+        #Generally, do not change these.  Describes initial conditions and
+        #initializes the variables
+        t=0
+        v=0
+        x = 0
+        rho=0
+        burnOutTime = 0
+        burnOutVelocity = 0
+        currentVelocity = 0
+
+        mass = initialMass
+        propellantMass = prRatio * mass
 
 
     ## END ADDITIONAL CODE TO BE SORTED
     ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~``
 
-	    '''
-	    STILL READING THROUGH THE SIMULATION CODE TO UNDERSTAND HOW IT WORKS.
-	    GOAL IS TO CREATE A ROCKET OBJECT THAT UNDERGO A SIMULATED FLIGHT
-	    THE FLIGHT SIMULATION IS A FUNCTION.
-	    '''
-	def flight_simulation( ):
-	   while (True):
-	       #Calculates atmospheric density at altitude x and passes density to RK4 fxn.
-	       rho = compDensity(x)
-	       #Calculates mDot and thrust as tank pressure drops (if applicable) and  altitude changes
-	       nThrust, nMdot = compThrust2(thrust, mDot, (initialMass * prRatio) , propellantMass)
-	       #Calculates Cd as a fx of mach number
-	       K = compTemp(x)
-	       mach = compMach(v,K)
-	       nCd = waveDrag(Cd,mach)
-	       #RK4 function to solve rocket differential equation
-	       v = RK4(t,v, mass, finalMass, nCd, nThrust, nMdot, gravity, Area, stepSize, rho)
-	       if (v > 30) or (t < 10):
-                    if (nThrust > 0 and (mass > finalMass)):
-			 mass = mass - nMdot * stepSize
-			 propellantMass = propellantMass - nMdot * stepSize
-			 burnOutTime = t
-			 burnOutVelocity = v
-			 thrustAtBO = nThrust
-			 nMdotAtBO = nMdot
-			 dispAtBO = x
-			#Thrust is off, but propellant is still being drained by the pressurant fluid (if applicable, such as blowdown system)
-		    elif (nThrust == 0 and nMdot != 0):
-			 mass = mass - nMdot * stepSize
-			 propellantMass = propellantMass - nMdot * stepSize
-		    else:
-			 #Leave this for clarity, though redundant
-			 mass = mass
-		    #Computes current displacement using reimen sum
-		    x = x + ((currentVelocity + v)/2 * stepSize)
+        '''
+        STILL READING THROUGH THE SIMULATION CODE TO UNDERSTAND HOW IT WORKS.
+        GOAL IS TO CREATE A ROCKET OBJECT THAT UNDERGO A SIMULATED FLIGHT
+        THE FLIGHT SIMULATION IS A FUNCTION.
+        '''
+    def flight_simulation( ):
+        while (True):
+            #Calculates atmospheric density at altitude x and passes density to RK4 fxn.
+            rho = compDensity(x)
+            #Calculates mDot and thrust as tank pressure drops (if applicable) and  altitude changes
+            nThrust, nMdot = compThrust2(thrust, mDot, (initialMass * prRatio) , propellantMass)
+            #Calculates Cd as a fx of mach number
+            K = compTemp(x)
+            mach = compMach(v,K)
+            nCd = waveDrag(Cd,mach)
+            #RK4 function to solve rocket differential equation
+            v = RK4(t,v, mass, finalMass, nCd, nThrust, nMdot, gravity, Area, stepSize, rho)
+            if (v > 30) or (t < 10):
+                if (nThrust > 0 and (mass > finalMass)):
+                    mass = mass - nMdot * stepSize
+                    propellantMass = propellantMass - nMdot * stepSize
+                    burnOutTime = t
+                    burnOutVelocity = v
+                    thrustAtBO = nThrust
+                    nMdotAtBO = nMdot
+                    dispAtBO = x
+                #Thrust is off, but propellant is still being drained by the pressurant fluid (if applicable, such as blowdown system)
+                elif (nThrust == 0 and nMdot != 0):
+                    mass = mass - nMdot * stepSize
+                    propellantMass = propellantMass - nMdot * stepSize
+                else:
+                    #Leave this for clarity, though redundant
+                    mass = mass
+                #Computes current displacement using reimen sum
+                x = x + ((currentVelocity + v)/2 * stepSize)
 
-		    xGraph = np.append(xGraph, x)
-		    vGraph = np.append(vGraph, v)
-		    currentVelocity = v
+            xGraph = np.append(xGraph, x)
+            vGraph = np.append(vGraph, v)
+            currentVelocity = v
 
-		    #steps the while loop forward in time
-		    t = t + stepSize
-		    tGraph = np.append(tGraph,t)
-	       else:
-                    break
-          #returns a tuple containing vectors containing displacement, velocity and time, maximum velocity, maximum achieved altitude, and burnout time
-	  return 
+            #steps the while loop forward in time
+            t = t + stepSize
+            tGraph = np.append(tGraph,t)
+        else:
+            break
+    #returns a tuple containing vectors containing displacement, velocity and time, maximum velocity, maximum achieved altitude, and burnout time
+    return
