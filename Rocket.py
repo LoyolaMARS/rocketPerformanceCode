@@ -75,7 +75,7 @@ class Rocket:
         currentVelocity = 0
 
         mass = initialMass
-        propellantMass = prRatio * mass
+        propellant_mass = prRatio * mass
 
 
     ## END ADDITIONAL CODE TO BE SORTED
@@ -87,44 +87,45 @@ class Rocket:
         THE FLIGHT SIMULATION IS A FUNCTION.
         '''
     def flight_simulation( ):
+        #While loop runs 
         while (True):
             #Calculates atmospheric density at altitude x and passes density to RK4 fxn.
             rho = compDensity(x)
             #Calculates mDot and thrust as tank pressure drops (if applicable) and  altitude changes
-            nThrust, nMdot = compThrust2(thrust, mDot, (initialMass * prRatio) , propellantMass)
+            n_thrust, n_mdot = compThrust2(thrust, mDot, (initialMass * prRatio) , propellantMass)
             #Calculates Cd as a fx of mach number
             K = compTemp(x)
             mach = compMach(v,K)
-            nCd = waveDrag(Cd,mach)
+            n_cd = waveDrag(Cd,mach)
             #RK4 function to solve rocket differential equation
             v = RK4(t,v, mass, finalMass, nCd, nThrust, nMdot, gravity, Area, stepSize, rho)
             if (v > 30) or (t < 10):
-                if (nThrust > 0 and (mass > finalMass)):
-                    mass = mass - nMdot * stepSize
-                    propellantMass = propellantMass - nMdot * stepSize
-                    burnOutTime = t
-                    burnOutVelocity = v
-                    thrustAtBO = nThrust
-                    nMdotAtBO = nMdot
-                    dispAtBO = x
+                if (n_thrust > 0 and (mass > final_mass)):
+                    mass = mass - n_mdot * step_size
+                    propellant_mass = propellant_mass - n_mdot * step_size
+                    burn_out_time = t
+                    burn_out_velocity = v
+                    bo_thrust = n_thrust
+                    bo_mdot = n_mdot
+                    bo_alt = x
                 #Thrust is off, but propellant is still being drained by the pressurant fluid (if applicable, such as blowdown system)
                 elif (nThrust == 0 and nMdot != 0):
-                    mass = mass - nMdot * stepSize
-                    propellantMass = propellantMass - nMdot * stepSize
+                    mass = mass - n_mdot * step_size
+                    propellant_mass = propellant_mass - n_mdot * step_size
                 else:
                     #Leave this for clarity, though redundant
                     mass = mass
                 #Computes current displacement using reimen sum
-                x = x + ((currentVelocity + v)/2 * stepSize)
+                x = x + ((current_velocity + v)/2 * step_size)
 
             xGraph = np.append(xGraph, x)
             vGraph = np.append(vGraph, v)
-            currentVelocity = v
+            current_velocity = v
 
             #steps the while loop forward in time
-            t = t + stepSize
+            t = t + step_size
             tGraph = np.append(tGraph,t)
         else:
             break
-    #returns a tuple containing vectors containing displacement, velocity and time, maximum velocity, maximum achieved altitude, and burnout time
-    return
+    #returns a tuple containing vectors containing displacement, velocity and time, maximum velocity, burnouttime, and max altitude
+    return xGraph, vGraph, tGraph, burnOutVelocity, burnOutTime, x, 
