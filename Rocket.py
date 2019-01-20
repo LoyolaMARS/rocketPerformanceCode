@@ -14,6 +14,7 @@
  *  -----  ----------  ------------  ---------------------------------------------------------------------
  *  1.0.0  2019-01-17  Matt Stein    Harrison Leece original code updates loaded in
  *  1.0.1  2019-01-19  Harrison L.   Changed all vars to conform with python programming guidelines
+ *  1.0.2  2019-01-19  Harrison L.   expanded Rocket init to return mdot and cd 
  *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ '''
  # imports
  import math
@@ -42,8 +43,10 @@ class Rocket:
         propellant_mass = pr_ratio * initial_mass
         final_mass = initial_mass - propellant_mass
         area = 3.1416 * 1/4 * (diameter) ** 2
+        mdot = thrust/isp
+        cd = drag_coefficient
 
-        return gravity, initial mass, propellant_mass, final_mass, area
+        return gravity, initial mass, propellant_mass, final_mass, area, mdot, cd
 
        ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
        ## ADDITIONAL CODE TO BE SORTED
