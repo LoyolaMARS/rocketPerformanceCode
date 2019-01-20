@@ -98,10 +98,14 @@ class Rocket:
             K = compTemp(x)
             mach = compMach(v,K)
             n_cd = waveDrag(Cd,mach)
-            #RK4 function to solve rocket differential equation
+            
+            #RK4 function to solve rocket differential equation.  Returns v(t) approximated using Runge-Kutta 4th order method
             v = RK4(t,v, mass, final_mass, n_cd, n_thrust, n_mdot, gravity, area, step_size, rho)
+            #Computes current displacement using reimen sum
+            x = x + ((current_velocity + v)/2 * step_size)
+            
             if (v > 10) or (t < 10):
-                if (n_thrust > 0 and (mass > final_mass)):
+                if (n_thrust > 0):
                     mass = mass - n_mdot * step_size
                     propellant_mass = propellant_mass - n_mdot * step_size
                     bo_time = t
@@ -109,16 +113,14 @@ class Rocket:
                     bo_thrust = n_thrust
                     bo_mdot = n_mdot
                     bo_alt = x
-                #Thrust is off, but propellant is still being drained by the pressurant fluid (if applicable, such as blowdown system)
+                #Thrust is off, but propellant is still being drained by the tank pressue fluid (if applicable, such as blowdown system)
                 elif (n_thrust == 0 and n_mdot != 0):
                     mass = mass - n_mdot * step_size
                     propellant_mass = propellant_mass - n_mdot * step_size
                 else:
                     #Leave this for clarity, though redundant
                     mass = mass
-                #Computes current displacement using reimen sum
-                x = x + ((current_velocity + v)/2 * step_size)
-
+                
             x_graph = np.append(x_graph, x)
             v_graph = np.append(v_graph, v)
             current_velocity = v
