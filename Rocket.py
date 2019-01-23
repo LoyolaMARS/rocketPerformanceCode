@@ -1,5 +1,5 @@
 ''' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * File name  :  RocketFlightCharacteristics.java
+ * File name  :  RocketFlightCharacteristics.py
  * Purpose    :  To Characterize the motion of a rocket given certain values using numerical methods.
  * @author    :  Harrison Leece, Bailey Paige
  * @author    :  Debugged by Matt Abel, Max Fung, Matthew Stein
@@ -14,7 +14,7 @@
  *  -----  ----------  ------------  ---------------------------------------------------------------------
  *  1.0.0  2019-01-17  Matt Stein    Harrison Leece original code updates loaded in
  *  1.0.1  2019-01-19  Harrison L.   Changed all vars to conform with python programming guidelines
- *  1.0.2  2019-01-19  Harrison L.   expanded Rocket init to return mdot and cd
+ *  1.0.2  2019-01-19  Harrison L.   expanded Rocket init to take in mdot and cd
  *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ '''
  # imports
  import math
@@ -39,10 +39,10 @@ class Rocket:
              drag_coefficient:   coefficient of drag
         '''
         gravity = 32.174  # ft / s^2
-        initial_mass = weight / gravity
-        propellant_mass = pr_ratio * initial_mass
-        final_mass = initial_mass - propellant_mass
-        area = 3.1416 * 1/4 * (diameter) ** 2
+        initial_mass = weight / gravity #lbf/(ft/s^2) = slug
+        propellant_mass = pr_ratio * initial_mass #lbf/(ft/s^2) = slug
+        final_mass = initial_mass - propellant_mass #lbf/(ft/s^2) = slug
+        area = 3.1416 * 1/4 * (diameter) ** 2 #feet
         mdot = thrust/isp
         cd = drag_coefficient
 
