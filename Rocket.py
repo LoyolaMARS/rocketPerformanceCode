@@ -14,7 +14,7 @@
  *  -----  ----------  ------------  ---------------------------------------------------------------------
  *  1.0.0  2019-01-17  Matt Stein    Harrison Leece original code updates loaded in
  *  1.0.1  2019-01-19  Harrison L.   Changed all vars to conform with python programming guidelines
- *  1.0.2  2019-01-19  Harrison L.   expanded Rocket init to return mdot and cd 
+ *  1.0.2  2019-01-19  Harrison L.   expanded Rocket init to return mdot and cd
  *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ '''
  # imports
  import math
@@ -77,6 +77,7 @@ class Rocket:
         bo_time = 0
         bo_velocity = 0
         current_velocity = 0
+        max_dynamic_pressure = 0
 
         mass = initial_mass
         propellant_mass = pr_ratio * mass
@@ -101,12 +102,12 @@ class Rocket:
             K = compTemp(x)
             mach = compMach(v,K)
             n_cd = waveDrag(Cd,mach)
-            
+
             #RK4 function to solve rocket differential equation.  Returns v(t) approximated using Runge-Kutta 4th order method
             v = RK4(t,v, mass, final_mass, n_cd, n_thrust, n_mdot, gravity, area, step_size, rho)
             #Computes current displacement using reimen sum
             x = x + ((current_velocity + v)/2 * step_size)
-            
+
             if (v > 10) or (t < 10):
                 if (n_thrust > 0):
                     mass = mass - n_mdot * step_size
@@ -116,6 +117,8 @@ class Rocket:
                     bo_thrust = n_thrust
                     bo_mdot = n_mdot
                     bo_alt = x
+                    if(max_dynamic_pressure < (.5 * rho * v**2)):
+                        max_dynamic_pressure = (.5 * rho * v**2)
                 #Thrust is off, but propellant is still being drained by the tank pressue fluid (if applicable, such as blowdown system)
                 elif (n_thrust == 0 and n_mdot != 0):
                     mass = mass - n_mdot * step_size
@@ -123,7 +126,7 @@ class Rocket:
                 else:
                     #Leave this for clarity, though redundant
                     mass = mass
-                
+
             x_graph = np.append(x_graph, x)
             v_graph = np.append(v_graph, v)
             current_velocity = v
@@ -133,5 +136,6 @@ class Rocket:
             t_graph = np.append(t_graph,t)
             else:
                 break
-    #returns a tuple containing vectors containing displacement, velocity and time, maximum velocity, burnouttime, and max altitude
-    return x_graph, v_graph, t_graph, bo_velocity, bo_time, x, 
+    #returns a tuple containing vectors containing displacement, velocity and time, maximum velocity,
+    #burnouttime, max altitude, and maximum dynamic pressure
+    return x_graph, v_graph, t_graph, bo_velocity, bo_time, x, max_dynamic_pressure
