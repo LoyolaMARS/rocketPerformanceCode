@@ -1,10 +1,10 @@
-## RocketRK4
+## RocketRK4, Harrison Leece
 # t = time, ###Not currently used, important for future expansion###
 # v = velocity
 # m = mass,
 # mFinal = Final mass of rocket, which is important for turning off
 #          thrust and mass loss
-# Cd = Coefficient of Drag, which is assumed constant, but is really 
+# Cd = Coefficient of Drag, which is assumed constant, but is really
 #      a function of height, but is assumed constant for simplicity
 # thrust
 # m2 = mass of fuel at 1/2 the step (for runge kutta 4th order k2 and k3 terms)
@@ -20,7 +20,7 @@ def RK4(t, v, m, mDry, Cd, thrust, mDot, gravity, A, h,r):
     m2 = m - (mDot*h/2)
 ####m3 is for k4.  in effect is t+h
     m3 = m - mDot*h
-	
+
     #Thrust is controlled by thrustCurve.py and will turn off when thrust
     #is approx half of initial
     # Try catch trades tiny speed increases for debugging efficiency
@@ -34,7 +34,6 @@ def RK4(t, v, m, mDry, Cd, thrust, mDot, gravity, A, h,r):
         k4 = h*((thrust/m3) - gravity - (.5 * A * r * Cd/m3 * (v4)**2))
     except:
         print("\nlikely overflow:  current system properties print")
-        print('engine on')
         print("Thrust: " +str(thrust))
         print("Mass: " + str(m))
         print("DryMass: " + str(mDry))
@@ -44,9 +43,6 @@ def RK4(t, v, m, mDry, Cd, thrust, mDot, gravity, A, h,r):
         print("Time sanity check: " + str(t))
 
     newVelocity = v + ((k1 + 2*k2 + 2*k3 + k4)/6)
-	
+
     #print('Velocity: ' + str(newVelocity))
     return newVelocity
-
-
-

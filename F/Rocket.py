@@ -31,10 +31,7 @@ from waveDrag import waveDrag
 #Create a Rocket Class
 class Rocket():
 
-    thrust = 0
-
-
-    def __init__(self,thrust_input ,weight, pr_ratio, isp, diameter, drag_coefficient):
+    def __init__(self,thrust_input, weight, pr_ratio, isp, diameter, drag_coefficient):
         '''    weight :            total rocket weight
              pr_ratio :          mass of propelants / total wet mass of rockets
              isp :               specific impulse; rating of rocket efficiency
@@ -47,27 +44,10 @@ class Rocket():
         self.propellant_mass = pr_ratio * self.initial_mass
         self.final_mass = self.initial_mass - self.propellant_mass
         self.area = 3.1416 * 1/4 * (diameter) ** 2
-        self.m_dot = thrust_input/isp
+        self.m_dot = thrust_input/(isp*self.gravity)
         self.cd = drag_coefficient
         self.pr_ratio = pr_ratio
 
-
-
-
-    step_size = .01
-
-
-
-
-
-
-    ## END ADDITIONAL CODE TO BE SORTED
-    ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~``
-
-
-        #STILL READING THROUGH THE SIMULATION CODE TO UNDERSTAND HOW IT WORKS.
-        #GOAL IS TO CREATE A ROCKET OBJECT THAT UNDERGO A SIMULATED FLIGHT
-        #THE FLIGHT SIMULATION IS A FUNCTION.
 
     def flight_simulation(self):
 
@@ -118,6 +98,8 @@ class Rocket():
             #Computes current displacement using reimen sum
             x = x + ((current_velocity + v)/2 * step_size)
 
+
+
             if (n_thrust > 0):
                 mass = mass - n_mdot * step_size
                 propellant_mass = propellant_mass - n_mdot * step_size
@@ -141,6 +123,7 @@ class Rocket():
             #steps the while loop forward in time
             t = t + step_size
             t_graph = np.append(t_graph,t)
+
 
         #returns a tuple containing vectors containing displacement, velocity and time, maximum velocity, burnouttime, and max altitude
         return x_graph, v_graph, t_graph, bo_velocity, bo_time, x,
