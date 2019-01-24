@@ -29,56 +29,36 @@ from waveDrag import compMach
 from waveDrag import waveDrag
 
 #Create a Rocket Class
-class Rocket:
+class Rocket():
 
-    def __init__(self,thrust,weight, pr_ratio, isp, diameter, drag_coefficient):
+    thrust = 0
+
+
+    def __init__(self,thrust_input ,weight, pr_ratio, isp, diameter, drag_coefficient):
         '''    weight :            total rocket weight
              pr_ratio :          mass of propelants / total wet mass of rockets
              isp :               specific impulse; rating of rocket efficiency
              diameter:           rocket body
              drag_coefficient:   coefficient of drag
         '''
-        gravity = 32.174  # ft / s^2
-        initial_mass = weight / gravity
-        propellant_mass = pr_ratio * initial_mass
-        final_mass = initial_mass - propellant_mass
-        area = 3.1416 * 1/4 * (diameter) ** 2
-        mdot = thrust/isp
-        cd = drag_coefficient
+        self.thrust = thrust_input
+        self.gravity = 32.174  # ft / s^2
+        self.initial_mass = weight / self.gravity
+        self.propellant_mass = pr_ratio * self.initial_mass
+        self.final_mass = self.initial_mass - self.propellant_mass
+        self.area = 3.1416 * 1/4 * (diameter) ** 2
+        self.m_dot = thrust_input/isp
+        self.cd = drag_coefficient
+        self.pr_ratio = pr_ratio
 
-        #return gravity, initial_mass, propellant_mass, final_mass, area, mdot, cd
 
-       ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-       ## ADDITIONAL CODE TO BE SORTED
+
 
     step_size = .01
 
-       # Passes curren time 'step' conditions to RK4 function
-       # Returns the next time 'step' conditions.
-       # Eqaution is modified in RK4.py file
 
 
-    #range is to allow faster optimization of engine thrust if desired
-    range_thrust=range(3000,3001,250)
-    print(range_thrust)
-       #initialize graphing arrays
-    x_graph = np.array([0])
-    v_graph = np.array([0])
-    t_graph = np.array([0])
-    #for thrust in range_thrust:
 
-    #Generally, do not change these.  Describes initial conditions and
-    #initializes the variables
-    t=0
-    v=0
-    x = 0
-    rho=0
-    bo_time = 0
-    bo_velocity = 0
-    current_velocity = 0
-
-    mass = initial_mass
-    propellant_mass = pr_ratio * mass
 
 
     ## END ADDITIONAL CODE TO BE SORTED
@@ -89,17 +69,49 @@ class Rocket:
         #GOAL IS TO CREATE A ROCKET OBJECT THAT UNDERGO A SIMULATED FLIGHT
         #THE FLIGHT SIMULATION IS A FUNCTION.
 
-    def flight_simulation( ):
+    def flight_simulation(self):
+
+        gravity = 32.174  # ft / s^2
+        step_size = .01
+        #initialize rocket data from __init__
+        thrust = self.thrust
+        m_dot = self.m_dot
+        area = self.area
+        cd = self.cd
+        pr_ratio = self.pr_ratio
+        initial_mass = self.initial_mass
+        propellant_mass = self.propellant_mass
+        final_mass = self.final_mass
+
+
+        mass = initial_mass
+
+        #Initializes a bunch of stuff locally
+        x_graph = np.array([0])
+        v_graph = np.array([0])
+        t_graph = np.array([0])
+
+        #Generally, do not change these.  Describes initial conditions and
+        #initializes the variables
+        t=0
+        v=0
+        x = 0
+        rho=0
+        bo_time = 0
+        bo_velocity = 0
+        current_velocity = 0
+
+
         #While loop runs until rocket velocity is less than 10 feet/s
         while ((v > 10) or (t < 10)):
             #Calculates atmospheric density at altitude x and passes density to RK4 fxn.
             rho = compDensity(x)
             #Calculates mDot and thrust as tank pressure drops (if applicable) and  altitude changes
-            n_thrust, n_mdot = compThrust2(thrust, m_dot, (initial_mass * pr_ratio) , propellant_mass)
+            n_thrust, n_mdot = compThrust2(thrust, m_dot, (initial_mass * pr_ratio), propellant_mass)
             #Calculates Cd as a fx of mach number
             K = compTemp(x)
             mach = compMach(v,K)
-            n_cd = waveDrag(Cd,mach)
+            n_cd = waveDrag(cd,mach)
 
             #RK4 function to solve rocket differential equation.  Returns v(t) approximated using Runge-Kutta 4th order method
             v = RK4(t,v, mass, final_mass, n_cd, n_thrust, n_mdot, gravity, area, step_size, rho)

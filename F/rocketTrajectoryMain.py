@@ -15,11 +15,27 @@
  *  1.0.0  2019-01-23  Harrison L    Initial release
  *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ '''
 
-import Rocket
+from Rocket import Rocket
 import numpy as np
 import matplotlib.pyplot as plt
+
+
 
 rocket = Rocket(3000, 330, .65, 220, 9/12, .25)
 tuple = rocket.flight_simulation()
 
-print(tuple[6])
+print(tuple[5])
+
+#Displacement subplot
+plt.subplot(2, 1, 1)
+plt.plot(tuple[2], tuple[0])
+plt.title('Displacement vs time')
+plt.ylabel('Displacement in feet')
+#velocity subplot
+plt.subplot(2, 1, 2)
+plt.title('Velocity vs Time')
+plt.ylabel('Upwards velocity in feet/s')
+plt.xlabel('Time in seconds')
+plt.plot(tuple[2], tuple[1])
+
+plt.show()
