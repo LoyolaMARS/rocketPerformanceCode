@@ -14,7 +14,7 @@
  *  -----  ----------  ------------  ---------------------------------------------------------------------
  *  1.0.0  2019-01-17  Matt Stein    Harrison Leece original code updates loaded in
  *  1.0.1  2019-01-19  Harrison L.   Changed all vars to conform with python programming guidelines
- *  1.0.2  2019-01-19  Harrison L.   expanded Rocket init to return mdot and cd
+ *  1.0.2  2019-01-19  Harrison L.   expanded Rocket init to take in mdot and cd
  *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ '''
 # imports
 import math
