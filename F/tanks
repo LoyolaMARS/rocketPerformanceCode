@@ -1,0 +1,55 @@
+# 4 hemispheres, 2 cylinders, diameter given
+# mass of Lox, propellant given
+# tank system name
+# ulage specified (cubic feet)
+
+# individual tank length
+# spaces between the tanks
+# densities of propellant, LOx, and ulage
+
+# output the length of the tank system
+
+
+def tank(type, diameter, mass, ulage):
+    '''
+    Determine tank length from type, diameter, mass, and ulage.
+
+    Parameters
+    ----------
+    type : string
+        Tank type (either propellant or lox)
+    diameter : numeric
+        Diameter of the rocket body cross section
+    mass : numeric
+        Total mass of propellant / lox within tank
+    ulage : numeric
+        Total mass of ulage within tank
+
+    Returns
+    -------
+    length : numeric
+        Length of tank
+
+    Notes
+    -----
+    The following assumptions are made
+
+    -
+    -
+    -
+
+    ==========================  =====================
+    Parameter                   Value
+    ==========================  =====================
+    Density of propellant
+    Density of lox
+    Density of ulage
+    ==========================  =====================
+
+    Created by Max Fung for Loyola MARS Base11 1-30-2019
+
+    References
+    ----------
+    [1]
+    
+    '''
