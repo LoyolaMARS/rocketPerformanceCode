@@ -80,10 +80,14 @@ class Rocket():
         bo_time = 0
         bo_velocity = 0
         current_velocity = 0
+        max_q = 0
+        max_q_velocity = 0
+        max_q_altitude = 0
+        max_q_acceleration = 0
 
 
         #While loop runs until rocket velocity is less than 10 feet/s
-        while ((v > 10) or (t < 10)):
+        while ((v > 10) or (t < 10) ):
             #Calculates atmospheric density at altitude x and passes density to RK4 fxn.
             rho = compDensity(x)
             #Calculates mDot and thrust as tank pressure drops (if applicable) and  altitude changes
@@ -103,11 +107,27 @@ class Rocket():
             if (n_thrust > 0):
                 mass = mass - n_mdot * step_size
                 propellant_mass = propellant_mass - n_mdot * step_size
+                #Get burnout
                 bo_time = t
                 bo_velocity = v
                 bo_thrust = n_thrust
                 bo_mdot = n_mdot
                 bo_alt = x
+                bo_mass = mass
+                bo_accel = (thrust/mass)/32.2 - ((area * n_cd * .5 * rho * v**2)/mass)/32.2 - 1
+                bo_mdot = n_mdot
+                temp_max_q = rho * 1/2 * v**2
+                if (max_q < temp_max_q):
+                    max_q = temp_max_q
+                    max_q_velocity = v
+                    max_q_altitude = x
+                    max_q_time = t
+                    #using the time and step size to find slope of velocity graph
+                    if(np.size(v_graph) > 3 ):
+                        max_q_acceleration = (v_graph[int(np.floor(t/step_size))] - v_graph[int(np.floor(t/step_size)-1)])/step_size
+
+
+
             #Thrust is off, but propellant is still being drained by the tank pressue fluid (if applicable, such as blowdown system)
             elif (n_thrust == 0 and n_mdot != 0):
                 mass = mass - n_mdot * step_size
@@ -126,4 +146,4 @@ class Rocket():
 
 
         #returns a tuple containing vectors containing displacement, velocity and time, maximum velocity, burnouttime, and max altitude
-        return x_graph, v_graph, t_graph, bo_velocity, bo_time, x,
+        return x_graph, v_graph, t_graph, bo_velocity, bo_time, x, bo_alt, bo_mass, t, bo_accel, bo_mdot, max_q, max_q_velocity, max_q_altitude, max_q_acceleration, max_q_time
